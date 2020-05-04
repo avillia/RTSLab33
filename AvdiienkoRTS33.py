@@ -96,7 +96,7 @@ def crossover(population, population_size, scores):
     """
     population_with_scores = list(zip(population, scores))
     possible_mates = list(combinations(population_with_scores, 2))
-    possible_mates.sort(key=lambda value: value[0][1] + value[1][1],)
+    possible_mates.sort(key=lambda value: value([0][1] + value[1][1])/2,)
     possible_mates = possible_mates[:population_size]
 
     new_population = []
