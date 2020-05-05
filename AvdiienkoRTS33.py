@@ -1,25 +1,21 @@
-import random
+mport random
 from itertools import combinations
 from datetime import datetime
 
 
-def diophantine(*coefficients: list, y: int, population_size: int = 5):
+def diophantine(*coefficients: iter, y: int, population_size: int = 5):
     """
     Function for calculating roots of linear Diophantine equation:
                         ax1 + bx2 + cx3 + dx4 = y
-    via genetic algorithm. Receives coefficients for unknowns, generates
-    random if not given.
-    :param coefficients: tuple of coefficients a, b, c, d
-    :param y: integer y
-    :param population_size: size of population for each
-                            iteration of genetic algorithm
+    via genetic algorithm. Receives coefficients for unknowns.
+    :param coefficients: iterable of coefficients a, b, c, d
+    :param y: int y
+    :param population_size: int representing size of population
+                            for each iteration of genetic algorithm
     :return: list of equation's roots and num of crossovers
              and mutations executed
     """
-    if not coefficients:
-        print("No input given, generating coefficients randomly.")
-        coefficients = random.sample(range(0, y), 4)
-    elif len(coefficients) != 4:
+    if len(coefficients) != 4:
         raise Exception("Please, enter proper amount of coefficients"
                         " or leave blank to generate randomly.")
 
@@ -28,7 +24,7 @@ def diophantine(*coefficients: list, y: int, population_size: int = 5):
           f"{a if a > 1 else ''}x1"
           f" + {b if b > 1 else ''}x2"
           f" + {c if c > 1 else ''}x3"
-          f" + {d if d > 1 else ''}x4 = {y}")
+          f" + {d if d > 1 else ''}x4 = {y}\n")
     del a, b, c, d
 
     old_population = [random.sample(range(0, 100), 4) for i in range(population_size)]
@@ -96,7 +92,7 @@ def crossover(population, population_size, scores):
     """
     population_with_scores = list(zip(population, scores))
     possible_mates = list(combinations(population_with_scores, 2))
-    possible_mates.sort(key=lambda value: value([0][1] + value[1][1])/2,)
+    possible_mates.sort(key=lambda value: (value[0][1] + value[1][1])/2,)
     possible_mates = possible_mates[:population_size]
 
     new_population = []
@@ -148,7 +144,7 @@ def show_as_answer(roots, coefficients, given):
 
 
 if __name__ == '__main__':
-    your_coefficients = [1, 3, 5, 7,]
+    your_coefficients = [2, 4, 5, 20, ]
     res = 100
     start = datetime.now()
     final_result, crossovers_num, mutate_num = diophantine(*your_coefficients, y=res)
