@@ -1,4 +1,4 @@
-mport random
+import random
 from itertools import combinations
 from datetime import datetime
 
@@ -49,7 +49,7 @@ def diophantine(*coefficients: iter, y: int, population_size: int = 5):
                 total_crossovers += 1
                 print(f"{new_pop_median_score}  < {old_pop_median_score}, crossover new population.")
             else:
-                old_population = mutated(old_population, y)
+                old_population = mutated(old_population, y, total_mutations)
                 total_mutations += 1
                 print(f"{new_pop_median_score} >= {old_pop_median_score}, mutate old population.")
 
@@ -104,11 +104,12 @@ def crossover(population, population_size, scores):
     return new_population
 
 
-def mutated(population, goal):
+def mutated(population, goal, mutation_index):
     """
     Function that mutates population via changing random elements of
     each population member. Random int is added to or subtracted from
     random element of member.
+    :param mutation_index:
     :param population: list represents population to be mutated
     :param goal: y of diophantine equation to define range of element
     variation
@@ -117,9 +118,11 @@ def mutated(population, goal):
     mutated_population = []
     for roots in population:
         mutated_roots = roots
-        random_root_index = random.randint(0, len(roots)-1)
-        mutated_roots[random_root_index] = (mutated_roots[random_root_index]
-                                            + random.randint(-goal//4, +goal//4))
+        mutation_indexes = random.sample([i for i in range(len(roots))],
+                                         1 + round(3*mutation_index/150))
+        for index in mutation_indexes:
+            mutated_roots[index] = (mutated_roots[index]
+                                    + random.randint(-goal//4, +goal//4))
         mutated_population.append(mutated_roots)
 
     return mutated_population
@@ -144,7 +147,7 @@ def show_as_answer(roots, coefficients, given):
 
 
 if __name__ == '__main__':
-    your_coefficients = [2, 4, 5, 20, ]
+    your_coefficients = [random.randint(-10, 10) for i in range(4)]
     res = 100
     start = datetime.now()
     final_result, crossovers_num, mutate_num = diophantine(*your_coefficients, y=res)
